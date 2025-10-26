@@ -1,21 +1,8 @@
-echo 'Install Java...'
-sudo apt update
-sudo apt install openjdk-17-jdk -y
-java version
-
-sleep 1
-echo 'Add Jenkins To Repository...'
-curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
-  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
-
-echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
-  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
-  /etc/apt/sources.list.d/jenkins.list > /dev/null
-
-echo 'Install Jenkins...'
-sudo apt update
-sudo apt install jenkins -y
-
-echo 'Start and Enable Jenkins'
-sudo systemctl start jenkins
-sudo systemctl enable jenkins
+helmv2 repo add jenkins https://charts.jenkins.io
+helmv2 repo update
+helmv2 install --name jenkins stable/jenkins \
+  --set controller.tag=2.426.3 \
+  --set controller.installPlugins[0]=kubernetes:latest \
+  --set controller.installPlugins[1]=workflow-aggregator:latest \
+  --set controller.installPlugins[2]=git:latest \
+  --set controller.installPlugins[3]=configuration-as-code:latest
