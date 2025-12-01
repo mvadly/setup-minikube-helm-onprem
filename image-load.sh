@@ -29,10 +29,13 @@ fi
 
 # Save and load image
 echo "$image saving to image.tar..."
-$driver save -o image.tar "$image"
+$driver save -o image.tar $image || exit 1
+
+echo "delete image existing from minikube"
+minikube image rm  "$image" || exit 1
 
 echo "$image loading to minikube..."
-minikube image load image.tar
+minikube image load image.tar || exit 1
 
 echo "Removing image.tar..."
 rm -f image.tar
